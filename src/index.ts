@@ -1,27 +1,21 @@
 import fastifyFactory, { FastifyRequest } from 'fastify';
-import { IncomingMessage } from 'http';
+import { RouteGenericInterface } from 'fastify/types/route';
 import { EnergySavingLevels, LGTV } from 'lgtv-ip-control';
 
 const fastify = fastifyFactory({ logger: true });
 
-interface LGTVSetup {
-  ip: string;
-  mac: string;
-  keycode: string;
+interface LGTVSetup extends RouteGenericInterface {
+  Body: {
+    ip: string;
+    mac: string;
+    keycode: string;
+    level: string;
+  };
 }
 
 fastify.post(
   '/setEnergySaving',
-  async (
-    request: FastifyRequest<
-      IncomingMessage,
-      {},
-      {},
-      {},
-      LGTVSetup & { level: string }
-    >,
-    reply
-  ) => {
+  async (request: FastifyRequest<LGTVSetup>, reply) => {
     try {
       const { ip, mac, keycode, level } = request.body;
       const tv = new LGTV(ip, mac, keycode);
@@ -33,7 +27,7 @@ fastify.post(
       return { ok: true };
     } catch (error) {
       reply.status(500);
-      return { ok: false, error: error.toString() };
+      return { ok: false, error: String(error) };
     }
   }
 );
