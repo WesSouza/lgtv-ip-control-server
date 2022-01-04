@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsdx build",
     "dev": "tsdx watch",
-    "lint": "tsdx lint src test",
+    "lint": "tsdx lint src",
     "prepare": "tsdx build",
     "start": "node ./dist/index.js"
   },
